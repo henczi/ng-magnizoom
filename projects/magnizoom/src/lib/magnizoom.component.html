@@ -1,0 +1,9 @@
+<canvas #mainCanvas
+  class="main-canvas"
+  [width]="canvasWidth"
+  [height]="canvasHeight"
+  (mouseleave)="onMouseLeave($event)"
+  (mouseenter)="onMouseEnterOrMove($event)"
+  (mousemove)="onMouseEnterOrMove($event)"
+  (wheel)="onMouseScroll($event)">
+</canvas>

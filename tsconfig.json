@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "magnizoom": [
+        "dist/magnizoom"
+      ],
+      "magnizoom/*": [
+        "dist/magnizoom/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

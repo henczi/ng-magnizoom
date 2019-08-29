@@ -143,6 +143,41 @@
           }
         }
       }
+    },
+    "magnizoom": {
+      "projectType": "library",
+      "root": "projects/magnizoom",
+      "sourceRoot": "projects/magnizoom/src",
+      "prefix": "ng",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/magnizoom/tsconfig.lib.json",
+            "project": "projects/magnizoom/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/magnizoom/src/test.ts",
+            "tsConfig": "projects/magnizoom/tsconfig.spec.json",
+            "karmaConfig": "projects/magnizoom/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/magnizoom/tsconfig.lib.json",
+              "projects/magnizoom/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "ng-magnizoom-app"
 }
