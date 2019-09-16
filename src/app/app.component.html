@@ -1,9 +1,23 @@
 <h1>NG Magnizoom</h1>
 
-<h2>Normal</h2>
-<ng-magnizoom imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<h2>Mode</h2>
+<h3>Lens</h3>
+<ng-magnizoom zoomMode="LENS" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<h3>Cover</h3>
+<ng-magnizoom zoomMode="COVER" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
 
-<h2>Box</h2>
+
+<h2>Multiple</h2>
+<ng-magnizoom zoomMode="LENS" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<ng-magnizoom zoomMode="COVER" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<ng-magnizoom zoomMode="LENS" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+
+
+<h2>ImageStyle / ImageClass</h2>
 <div style="width: 800px; height: 600px; border: 5px solid black;">
-  <ng-magnizoom imageSrc="https://www.nationalparks.org/sites/default/files/yosemite-merced.jpg"></ng-magnizoom>
+  <ng-magnizoom
+    [imageStyle]="{ 'max-width': '100%', 'max-height': '100%' }"
+    [imageClass]="{ 'custom-class': true }"
+    imageSrc="https://www.nationalparks.org/sites/default/files/yosemite-merced.jpg">
+  </ng-magnizoom>
 </div>

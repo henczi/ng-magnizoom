@@ -1,5 +1,7 @@
 <canvas #mainCanvas
   class="main-canvas"
+  [ngClass]="imageClass"
+  [ngStyle]="imageStyle"
   [width]="canvasWidth"
   [height]="canvasHeight"
   (mouseleave)="onMouseLeave($event)"
