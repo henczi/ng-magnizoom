@@ -1,0 +1,22 @@
+{
+  "name": "ng-magnizoom",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/henczi/ng-magnizoom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/henczi/ng-magnizoom/issues"
+  },
+  "keywords": [
+    "angular",
+    "ng",
+    "image",
+    "zoom",
+    "magnifier"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^8.2.3",
+    "@angular/core": "^8.2.3"
+  }
+}

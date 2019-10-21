@@ -19,11 +19,11 @@
       "dom"
     ],
     "paths": {
-      "magnizoom": [
-        "dist/magnizoom"
+      "ng-magnizoom": [
+        "dist/ng-magnizoom"
       ],
-      "magnizoom/*": [
-        "dist/magnizoom/*"
+      "ng-magnizoom/*": [
+        "dist/ng-magnizoom/*"
       ]
     }
   },

@@ -8,7 +8,7 @@ type Point2D = { x: number, y: number } | null;
   templateUrl: './magnizoom.component.html',
   styleUrls: ['./magnizoom.component.scss']
 })
-export class MagnizoomComponent implements OnInit {
+export class NgMagnizoomComponent implements OnInit {
 
   @Input() imageSrc: string;
   @Input() zoomMode: 'LENS' | 'COVER' = 'COVER';

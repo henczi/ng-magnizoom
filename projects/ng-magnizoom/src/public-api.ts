@@ -1,5 +1,5 @@
 /*
- * Public API Surface of magnizoom
+ * Public API Surface of ng-magnizoom
  */
 
 export * from './lib/magnizoom.service';
