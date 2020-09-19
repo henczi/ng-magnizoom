@@ -155,6 +155,11 @@
           "options": {
             "tsConfig": "projects/ng-magnizoom/tsconfig.lib.json",
             "project": "projects/ng-magnizoom/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ng-magnizoom/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {

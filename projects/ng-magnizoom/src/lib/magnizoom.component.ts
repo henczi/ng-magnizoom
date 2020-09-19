@@ -47,7 +47,7 @@ export class NgMagnizoomComponent implements OnInit {
     this.image = new Image();
     this.image.onload = () => {
       this.lensSize = { width: this.image.width / 2, height: this.image.height / 2 };
-      this.render();
+      setTimeout(() => this.render());
     };
     this.image.src = src;
   }

@@ -1,5 +1,7 @@
 # Ng-Magnizoom
 
+**DEMO:** [Stackblitz](https://stackblitz.com/edit/ng-magnizoom-demo)
+
 ## Getting Started
 
 ### Step 1: Installing via NPM
