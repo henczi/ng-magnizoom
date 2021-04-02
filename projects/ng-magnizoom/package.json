@@ -1,11 +1,12 @@
 {
   "name": "ng-magnizoom",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Angular 10 image magnifier (based on HTML canvas)",
   "repository": {
     "type": "git",
     "url": "https://github.com/henczi/ng-magnizoom.git"
   },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/henczi/ng-magnizoom/issues"
   },
@@ -14,7 +15,11 @@
     "ng",
     "image",
     "zoom",
-    "magnifier"
+    "magnifier",
+    "image magnifier",
+    "image zoom",
+    "canvas",
+    "ng-magnizoom"
   ],
   "peerDependencies": {
     "@angular/common": ">=10.0.0",

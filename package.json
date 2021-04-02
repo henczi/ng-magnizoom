@@ -7,6 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
+    "prepublish": "ng build --prod ng-magnizoom && cp ./README.md ./dist/ng-magnizoom/",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -24,7 +25,7 @@
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.1000.5",
+    "@angular-devkit/build-angular": "^0.1102.6",
     "@angular-devkit/build-ng-packagr": "^0.1000.5",
     "@angular/cli": "^10.0.0",
     "@angular/compiler-cli": "^10.1.2",
