@@ -1,6 +1,6 @@
 {
   "name": "ng-magnizoom",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Angular 10 image magnifier (based on HTML canvas)",
   "repository": {
     "type": "git",

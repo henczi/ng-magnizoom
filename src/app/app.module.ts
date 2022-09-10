@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { NgMagnizoomModule } from '../../dist/ng-magnizoom';
+import { NgMagnizoomModule } from '../../projects/ng-magnizoom/src/public-api';
 
 @NgModule({
   declarations: [

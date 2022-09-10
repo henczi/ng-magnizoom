@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ng-magnizoom-app';
+
+  zoom = 3;
+  position = { x: 200, y: 100 };
 }

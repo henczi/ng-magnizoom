@@ -1,5 +1,5 @@
 import type { ElementRef } from '@angular/core';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, ViewChild, EventEmitter } from '@angular/core';
 
 interface Size2D { width: number; height: number; }
 type Point2D = { x: number, y: number } | null;
@@ -9,12 +9,26 @@ type Point2D = { x: number, y: number } | null;
   templateUrl: './magnizoom.component.html',
   styleUrls: ['./magnizoom.component.scss']
 })
-export class NgMagnizoomComponent implements OnInit {
+export class NgMagnizoomComponent implements OnInit, OnChanges {
 
   @Input() imageSrc: string;
   @Input() zoomMode: 'LENS' | 'COVER' = 'COVER';
   @Input() minZoomFactor = 1.2;
   @Input() maxZoomFactor = 3;
+
+  @Input() zoomFactor = 2;
+  @Output() zoomFactorChange = new EventEmitter<number>();
+
+  @Input() lensSizeUnit: 'NORMALIZED' | 'PIXEL' = 'NORMALIZED';
+  @Input() lensSize: Size2D = { width: 0.5, height: 0.5 };
+
+  @Input() zoomCenterUnit: 'NORMALIZED' | 'PIXEL' = 'NORMALIZED';
+  @Input() zoomCenter?: Point2D;
+  @Output() zoomCenterChange = new EventEmitter<Point2D | undefined>();
+
+
+  @Input() updateOnMouseEvents = true;
+
 
   @Input() imageStyle: { [x: string]: any; };
   @Input() imageClass: any;
@@ -25,10 +39,11 @@ export class NgMagnizoomComponent implements OnInit {
   context: CanvasRenderingContext2D;
   image: HTMLImageElement;
 
-  mousePosition: Point2D = null;
-  lensSize: Size2D = { width: 400, height: 300 };
-  zoomFactor = 2;
+  _centerPosition: Point2D;
+  _lensSize?: Size2D;
+  _zoomFactor: number;
 
+  imageReady = false;
   get canvasWidth() { return this.image && this.image.width || 800; }
   get canvasHeight() { return this.image && this.image.height || 600; }
 
@@ -39,6 +54,12 @@ export class NgMagnizoomComponent implements OnInit {
     this.loadImage(this.imageSrc);
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes && (changes.lensSize || changes.zoomCenter || changes.zoomFactor)) {
+      this.updateParameters();
+    }
+  }
+
   initContext() {
     this.canvas = (this.mainCanvasRef.nativeElement as HTMLCanvasElement);
     this.context = this.canvas.getContext('2d');
@@ -47,18 +68,91 @@ export class NgMagnizoomComponent implements OnInit {
   loadImage(src: string) {
     this.image = new Image();
     this.image.onload = () => {
-      this.lensSize = { width: this.image.width / 2, height: this.image.height / 2 };
-      setTimeout(() => this.render());
+      this.imageReady = true;
+      this.updateParameters();
+      setTimeout(() => this.update());
     };
     this.image.src = src;
   }
 
+  updateParameters() {
+    if (this.lensSizeUnit === 'NORMALIZED') {
+      if (this.imageReady) {
+        this._lensSize = {
+          width: this.lensSize.width * this.image.width,
+          height: this.lensSize.height * this.image.height
+        };
+      }
+    } else {
+      this._lensSize = {
+        width: this.lensSize.width,
+        height: this.lensSize.height
+      };
+    }
+
+    if (!this.zoomCenter) {
+      this._centerPosition = undefined;
+    } else if (this.zoomCenterUnit === 'NORMALIZED'){
+      if (this.imageReady) {
+        this._centerPosition = {
+          x: this.zoomCenter.x * this.image.width,
+          y: this.zoomCenter.y * this.image.height
+        };
+      }
+    } else {
+      this._centerPosition = {
+        x: this.zoomCenter.x,
+        y: this.zoomCenter.y
+      };
+    }
+
+    this._zoomFactor = this.zoomFactor;
+    if (this._zoomFactor > this.maxZoomFactor) {
+      this._zoomFactor = this.maxZoomFactor;
+    }
+    if (this._zoomFactor < this.minZoomFactor) {
+      this._zoomFactor = this.minZoomFactor;
+    }
+
+    this.update();
+  }
+
+  update() {
+    this.render();
+    let currUnitCenter: { x: number, y: number } | undefined, needUpdate = false;
+    if (!this._centerPosition) {
+      currUnitCenter = undefined;
+      needUpdate = currUnitCenter !== this.zoomCenter;
+    } else if (this.zoomCenterUnit === 'NORMALIZED') {
+      if (this.imageReady) {
+        currUnitCenter = {
+          x: this._centerPosition.x / this.image.width,
+          y: this._centerPosition.y / this.image.height
+        };
+        needUpdate = currUnitCenter.x !== this.zoomCenter?.x || currUnitCenter.y !== this.zoomCenter?.y;
+      }
+    } else {
+      currUnitCenter = {
+        x: this._centerPosition.x,
+        y: this._centerPosition.y
+      };
+      needUpdate = currUnitCenter.x !== this.zoomCenter?.x || currUnitCenter.y !== this.zoomCenter?.y;
+    }
+    if (needUpdate) {
+      this.zoomCenterChange.emit(currUnitCenter);
+    }
+  }
+
   render() {
+    if (!this.context || !this.imageReady) {
+      return;
+    }
+
     this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight); // clear canvas
     this.context.lineWidth = 1; // border width
     this.context.drawImage(this.image, 0, 0); // bg image
 
-    if (this.mousePosition) {
+    if (this._centerPosition) {
       switch (this.zoomMode) {
         case 'LENS': this.renderLensMode(); break;
         case 'COVER': this.renderCoverMode(); break;
@@ -90,28 +184,28 @@ export class NgMagnizoomComponent implements OnInit {
   }
 
   getZoomRect() {
-    const w = this.lensSize.width;
-    const h = this.lensSize.height;
-    const x = this.mousePosition.x - (w / 2);
-    const y = this.mousePosition.y - (h / 2);
+    const w = this._lensSize.width;
+    const h = this._lensSize.height;
+    const x = this._centerPosition.x - (w / 2);
+    const y = this._centerPosition.y - (h / 2);
     return this.clampRect(x, y, w, h);
   }
 
   getClippingRect() {
-    const w = this.lensSize.width / this.zoomFactor;
-    const h = this.lensSize.height / this.zoomFactor;
-    const x = this.mousePosition.x - (w / 2);
-    const y = this.mousePosition.y - (h / 2);
+    const w = this._lensSize.width / this._zoomFactor;
+    const h = this._lensSize.height / this._zoomFactor;
+    const x = this._centerPosition.x - (w / 2);
+    const y = this._centerPosition.y - (h / 2);
     return this.clampRect(x, y, w, h);
   }
 
   getCoverRect() {
-    const w = this.canvasWidth / this.zoomFactor;
-    const h = this.canvasHeight / this.zoomFactor;
+    const w = this.canvasWidth / this._zoomFactor;
+    const h = this.canvasHeight / this._zoomFactor;
     // const x = this.mousePosition.x - (w / 2);
     // const y = this.mousePosition.y - (h / 2);
-    const x = this.mousePosition.x - this.mousePosition.x / this.zoomFactor;
-    const y = this.mousePosition.y - this.mousePosition.y / this.zoomFactor;
+    const x = this._centerPosition.x - this._centerPosition.x / this._zoomFactor;
+    const y = this._centerPosition.y - this._centerPosition.y / this._zoomFactor;
     return this.clampRect(x, y, w, h);
   }
 
@@ -129,27 +223,33 @@ export class NgMagnizoomComponent implements OnInit {
     const viewToModelY = this.canvasHeight / boundingRect.height;
     const x = (clientX - boundingRect.left) * viewToModelX;
     const y = (clientY - boundingRect.top) * viewToModelY;
-    this.mousePosition = { x, y };
+    this._centerPosition = { x, y };
   }
 
   onMouseLeave(event: MouseEvent) {
-    this.mousePosition = null;
-    this.render();
+    if (!this.updateOnMouseEvents) { return; }
+    this._centerPosition = null;
+    this.update();
   }
 
   onMouseEnterOrMove(event: MouseEvent) {
+    if (!this.updateOnMouseEvents) { return; }
     this.calculateMousePosition(event.clientX, event.clientY);
-    this.render();
+    this.update();
   }
 
   onMouseScroll(event: WheelEvent) {
-    let newZoomFactor = this.zoomFactor;
+    if (!this.updateOnMouseEvents) { return; }
+    let newZoomFactor = this._zoomFactor;
     newZoomFactor -= event.deltaY / 1000;
     if (newZoomFactor < this.minZoomFactor) { newZoomFactor = this.minZoomFactor; }
     if (newZoomFactor > this.maxZoomFactor) { newZoomFactor = this.maxZoomFactor; }
-    if (this.zoomFactor !== newZoomFactor) {
-      this.zoomFactor = newZoomFactor;
-      this.render();
+    if (this._zoomFactor !== newZoomFactor) {
+      this._zoomFactor = newZoomFactor;
+      if (this.zoomFactor !== this._zoomFactor) {
+        this.zoomFactorChange.emit(this._zoomFactor);
+      }
+      this.update();
     }
     event.preventDefault();
     event.stopPropagation();
