@@ -1,16 +1,18 @@
 <h1>Ng Magnizoom</h1>
 
+<button style="position: fixed; top: 10px; right: 10px;" (click)="toggleImageSrc()">Toggle Image</button>
+
 <h2>Mode</h2>
 <h3>Lens</h3>
-<ng-magnizoom zoomMode="LENS" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<ng-magnizoom zoomMode="LENS" imageSrc="{{imageSrc}}"></ng-magnizoom>
 <h3>Cover</h3>
-<ng-magnizoom zoomMode="COVER" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<ng-magnizoom zoomMode="COVER" imageSrc="{{imageSrc}}"></ng-magnizoom>
 
 
 <h2>Multiple</h2>
-<ng-magnizoom zoomMode="LENS" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
-<ng-magnizoom zoomMode="COVER" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
-<ng-magnizoom zoomMode="LENS" imageSrc="https://www.w3schools.com/html/pic_trulli.jpg"></ng-magnizoom>
+<ng-magnizoom zoomMode="LENS" imageSrc="{{imageSrc}}"></ng-magnizoom>
+<ng-magnizoom zoomMode="COVER" imageSrc="{{imageSrc}}"></ng-magnizoom>
+<ng-magnizoom zoomMode="LENS" imageSrc="{{imageSrc}}"></ng-magnizoom>
 
 
 <h2>ImageStyle / ImageClass</h2>
@@ -30,7 +32,7 @@
   zoomCenterUnit="PIXEL"
   [lensSize]="{ width: 100, height: 160 }"
   [zoomCenter]="{ x: 100, y: 100 }"
-  imageSrc="https://www.w3schools.com/html/pic_trulli.jpg">
+  imageSrc="{{imageSrc}}">
 </ng-magnizoom>
 
 <h2>Fix size and position</h2>
@@ -42,5 +44,5 @@
   [lensSize]="{ width: 0.25, height: 0.25 }"
   [(zoomCenter)]="position"
   [(zoomFactor)]="zoom"
-  imageSrc="https://www.w3schools.com/html/pic_trulli.jpg">
+  imageSrc="{{imageSrc}}">
 </ng-magnizoom>

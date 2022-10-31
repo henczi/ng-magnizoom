@@ -55,8 +55,14 @@ export class NgMagnizoomComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes && (changes.lensSize || changes.zoomCenter || changes.zoomFactor)) {
+    if (!changes) {
+      return;
+    }
+    if (changes.lensSize || changes.zoomCenter || changes.zoomFactor) {
       this.updateParameters();
+    }
+    if (changes.imageSrc && !changes.imageSrc.firstChange) {
+      this.loadImage(changes.imageSrc.currentValue);
     }
   }
 
