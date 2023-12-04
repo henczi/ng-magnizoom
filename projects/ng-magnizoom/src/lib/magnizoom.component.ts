@@ -225,10 +225,37 @@ export class NgMagnizoomComponent implements OnInit, OnChanges {
 
   calculateMousePosition(clientX: number, clientY: number) {
     const boundingRect = this.canvas.getBoundingClientRect();
-    const viewToModelX = this.canvasWidth / boundingRect.width;
-    const viewToModelY = this.canvasHeight / boundingRect.height;
-    const x = (clientX - boundingRect.left) * viewToModelX;
-    const y = (clientY - boundingRect.top) * viewToModelY;
+
+    const boundingRectX = (clientX - boundingRect.left);
+    const boundingRectY = (clientY - boundingRect.top);
+
+    let elementX = boundingRectX, elementY = boundingRectY;
+    let elementWidth = boundingRect.width, elementHeight = boundingRect.height;
+
+    const computedStyle = window.getComputedStyle(this.canvas, null);
+    const domMatrix = new DOMMatrix(computedStyle.transform);
+    if (!domMatrix.isIdentity) {
+      const { a, b } = domMatrix;
+      const transformRot = Math.atan2(b, a);
+      const transformScale = Math.round( Math.sqrt(a * a + b * b) * 100 ) / 100;
+      if (transformRot) {
+        const boundingRectCenterX = boundingRect.width / 2;
+        const boundingRectCenterY = boundingRect.height / 2;
+        const dx = (boundingRectX - boundingRectCenterX);
+        const dy = (boundingRectY - boundingRectCenterY);
+        const d = Math.sqrt(dx * dx + dy * dy);
+        const r = Math.atan2(dy, dx);
+        elementWidth = this.canvas.clientWidth * transformScale;
+        elementHeight = this.canvas.clientHeight * transformScale;
+        elementX = (elementWidth / 2) + (d * Math.cos(r - transformRot));
+        elementY = (elementHeight / 2) + (d * Math.sin(r - transformRot));
+      }
+    }
+
+    const viewToModelX = this.canvasWidth / elementWidth;
+    const viewToModelY = this.canvasHeight / elementHeight;
+    const x = elementX * viewToModelX;
+    const y = elementY * viewToModelY;
     this._centerPosition = { x, y };
   }
 
