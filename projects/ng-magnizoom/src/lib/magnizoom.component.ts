@@ -29,7 +29,8 @@ export class NgMagnizoomComponent implements OnInit, OnChanges {
 
   @Input() updateOnMouseEvents = true;
 
-
+  @Input() lensBorderSize: number = 1;
+  @Input() lensBorderHexColor: string = "#ebebeb";
   @Input() imageStyle: { [x: string]: any; };
   @Input() imageClass: any;
 
@@ -167,7 +168,7 @@ export class NgMagnizoomComponent implements OnInit, OnChanges {
   }
 
   renderLensMode() {
-    this.context.lineWidth = 5; // border width
+    this.context.lineWidth = this.lensBorderSize; // border width
     const zoomRect = this.getZoomRect();
     this.context.fillRect(zoomRect.x, zoomRect.y, zoomRect.w, zoomRect.h); // bg (clear)
     const clippingRect = this.getClippingRect();
@@ -177,7 +178,8 @@ export class NgMagnizoomComponent implements OnInit, OnChanges {
       clippingRect.x, clippingRect.y, clippingRect.w, clippingRect.h,
       zoomRect.x, zoomRect.y, zoomRect.w, zoomRect.h
     );
-    this.context.strokeRect(zoomRect.x, zoomRect.y, zoomRect.w, zoomRect.h); // border
+    this.context.strokeStyle =  this.lensBorderHexColor// border
+    this.context.strokeRect(zoomRect.x, zoomRect.y, zoomRect.w, zoomRect.h);
   }
 
   renderCoverMode() {
